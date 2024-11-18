@@ -29,7 +29,7 @@ export default function Register() {
         password
       });
       setError(null);
-      navigate('/signin');
+      navigate('/login');
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       
@@ -105,7 +105,7 @@ export default function Register() {
           </form>
           <div className="flex gap-2 text-sm mt-3">
             <span>Have an account?</span>
-            <Link to="/signin" className="text-blue-500">Sign in</Link>
+            <Link to="/login" className="text-blue-500">Sign in</Link>
           </div>
           {error && 
           <Alert className="mt-3" color="failure">{error}</Alert>
