@@ -33,7 +33,6 @@ export default function Register() {
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       
-      // Handle specific error cases
       if (errorMessage?.includes('duplicate key error')) {
         setError('Username already exists. Please choose another one.');
       } else if (error.response?.data?.message) {
