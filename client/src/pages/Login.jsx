@@ -1,13 +1,14 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import apiRequest from "../../lib/apiRequest.js";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginStart, loginSuccess, loginFailure } from "../redux/user/userSlice.js";
 
 export default function Login() {
 
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,32 +17,29 @@ export default function Login() {
     const password = formData.get('password').trim();
 
     if (!username || !password) {
-      setLoading(false);
-      return setError('All fields are required');
+      return dispatch(loginFailure('All fields are required'));
     }
 
     try {
-      setLoading(true);
-      await apiRequest.post('/auth/login', {
+      dispatch(loginStart());
+      const res = await apiRequest.post('/auth/login', {
         username,
         password
       });
-      setError(null);
+      dispatch(loginSuccess(res.data));
       navigate('/');
     } catch (error) {
       const errorMessage = error.response?.data?.message;
       
       if (errorMessage?.includes('duplicate key error')) {
-        setError('Username already exists. Please choose another one.');
+        dispatch(loginFailure('Username already exists. Please choose another one.'));
       } else if (error.response?.data?.message) {
-        setError(error.response.data.message);
+        dispatch(loginFailure(error.response.data.message));
       } else if (error.response?.status === 500) {
-        setError('Server error. Please try again later.');
+        dispatch(loginFailure('Server error. Please try again later.'));
       } else {
-        setError('Something went wrong. Please try again.');
+        dispatch(loginFailure('Something went wrong. Please try again.'));
       }
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -50,7 +48,7 @@ export default function Login() {
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
         {/* left */}
         <div className="flex-1">
-          <Link to="/" className="font-bold dark:text-white text-4xl">
+          <Link to="#" className="font-bold dark:text-white text-4xl">
             <span className="px-2 py-1 bg-gradient-to-r from-blue-200
               via-green-100 to-yellow-50 rounded-lg text-gray-600">
               Zhifan's
