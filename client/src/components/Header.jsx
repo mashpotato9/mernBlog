@@ -1,12 +1,20 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import {AiOutlineSearch} from "react-icons/ai";
-import {FaMoon} from "react-icons/fa";
-import { useSelector } from "react-redux";
+import {FaMoon, FaSun} from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { setTheme } from "../redux/theme/themeSlice.js";
 
 export default function Header() {
     const path = useLocation().pathname;
     const { currUser } = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const { theme } = useSelector((state) => state.theme);
+
+
+    const handleThemeChange = () => {
+        dispatch(setTheme());
+    }
 
   return (
     <Navbar className="border-b-2">
@@ -16,7 +24,7 @@ export default function Header() {
              via-green-100 to-yellow-50 rounded-lg text-gray-600">
                 Zhifan's
             </span>
-            <span className="text-gray-700">Blog</span>
+            <span className="text-gray-700 dark:text-gray-300">Blog</span>
         </Link>
         <form>
             <TextInput
@@ -30,8 +38,12 @@ export default function Header() {
            <AiOutlineSearch className="self-center" /> 
         </Button>
         <div className="flex gap-3 md:order-2">
-            <Button className="w-12 h-10 hidden sm:inline" color="gray" pill>
-                <FaMoon />
+            <Button className="w-12 h-10 hidden sm:inline" 
+                    color="gray" 
+                    pill 
+                    onClick={handleThemeChange}
+            >
+                {theme === 'light' ? <FaSun /> : <FaMoon />}
             </Button>
             {currUser ? (
                 <Dropdown arrowIcon={false} inline label={
@@ -51,7 +63,7 @@ export default function Header() {
                 </Dropdown>
             ) : (
                 <Button gradientDuoTone="tealToLime" outline>
-                    <Link to="/signin">Sign In</Link>
+                    <Link to="/login">Sign In</Link>
                 </Button>
             )}
             

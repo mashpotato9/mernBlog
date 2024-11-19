@@ -14,7 +14,7 @@ export default function FooterCom() {
                             via-green-100 to-yellow-50 rounded-lg text-gray-600">
                             Zhifan's
                         </span>
-                        <span className="text-gray-700">Blog</span>
+                        <span className="text-gray-700 dark:text-gray-300">Blog</span>
                     </Link>
                 </div>
                 <div className='grid grid-cols-2 gap-8 mt-4 sm:grid-cols-3 sm:gap-6'>

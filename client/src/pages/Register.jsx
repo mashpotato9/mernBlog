@@ -58,7 +58,7 @@ export default function Register() {
               via-green-100 to-yellow-50 rounded-lg text-gray-600">
               Zhifan's
             </span>
-              <span className="text-gray-700">Blog</span>
+              <span className="text-gray-700 dark:text-gray-300">Blog</span>
           </Link>
           <p className="text-sm mt-5">
             This is a demo blog site built with React, Tailwind CSS. 
