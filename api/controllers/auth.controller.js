@@ -55,3 +55,48 @@ export const login = async (req, res, next) => {
         next(error);
     }
 }
+
+export const googleLogin = async (req, res, next) => {
+    const { name, email, photo } = req.body;
+    try{
+        const user = await User.findOne({ email });
+        if(user){
+            const token = jwt.sign(
+                { userId: user._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            )
+            const { password: userPassword, ...userInfo } = user._doc;
+            res.status(200).cookie('access_token', token, {
+                httpOnly: true,
+                sameSite: 'None',
+                //secure: process.env.NODE_ENV === 'production',
+                maxAge: 3600000
+            }).json(userInfo);
+        } else {
+            const generatedPassword = Math.random().toString(36).slice(-8);
+            const hashedPassword = bcrypt.hashSync(generatedPassword, 12);
+            const newUser = new User({ 
+                username: name.toLowerCase().split(' ').join('') + Math.random().toString(9).slice(-4),
+                email, 
+                password: hashedPassword, 
+                profilePicture: photo 
+            });
+            await newUser.save();
+            const token = jwt.sign(
+                { userId: newUser._id },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            )
+            const { password: userPassword, ...userInfo } = newUser._doc;
+            res.status(200).cookie('access_token', token, {
+                httpOnly: true,
+                sameSite: 'None',
+                //secure: process.env.NODE_ENV === 'production',
+                maxAge: 3600000
+            }).json(userInfo);
+        }
+    } catch (error) {
+        next(error);
+    }
+}

@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    profilePicture: {
+        type: String,
+        default: 'https://www.eastendprep.org/wp-content/uploads/2016/06/noavatar-300x300.jpg',
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
