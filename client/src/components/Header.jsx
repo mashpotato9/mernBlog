@@ -47,7 +47,7 @@ export default function Header() {
             </Button>
             {currUser ? (
                 <Dropdown arrowIcon={false} inline label={
-                    <Avatar alt="user" img={currUser.profilePicture} rounded/>
+                    <Avatar alt="user" img={currUser.profilePicture} rounded />
                 }>
                     <Dropdown.Header className="flex flex-col pointer-events-none">
                         <span className="block text-sm">@{currUser.username}</span>
