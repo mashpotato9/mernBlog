@@ -4,7 +4,7 @@ import { HiOutlineExclamationCircle } from 'react-icons/hi';
 import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
-import { updateStart, updateSuccess, updateFailure, deleteStart, deleteSuccess, deleteFailure } from '../redux/user/userSlice.js';
+import { updateStart, updateSuccess, updateFailure, deleteStart, deleteSuccess, deleteFailure, logoutSuccess } from '../redux/user/userSlice.js';
 import { useDispatch } from 'react-redux';
 import apiRequest from '../../lib/apiRequest.js';
 
@@ -104,6 +104,15 @@ export default function DashProfile() {
         }
     }
 
+    const handleLogout = async () => {
+        try{
+            const res = await apiRequest.post('auth/logout');
+            dispatch(logoutSuccess());
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
@@ -125,7 +134,7 @@ export default function DashProfile() {
         </form>
         <div className='text-red-500 flex justify-between mt-5'>
             <span className='cursor-pointer' onClick={() => setShowWindow(true)}>Delete Account</span>
-            <span className='cursor-pointer'>Log out</span>
+            <span className='cursor-pointer' onClick={handleLogout}>Log out</span>
         </div>
         {updateUserSuccess && (
             <Alert color='success' className='mt-5'>
