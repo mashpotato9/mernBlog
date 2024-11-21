@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +18,7 @@ mongoose.connect(process.env.MONGODB_URL )
 )
 
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
     origin: process.env.CLIENT_URL,
