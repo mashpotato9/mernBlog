@@ -38,8 +38,9 @@ export const login = async (req, res, next) => {
             return next(errorHandler(400, 'Invalid credentials'));
         }
         const token = jwt.sign(
-            { userId: user._id },
+            { userId: user._id, isAdmin: user.isAdmin, },
             process.env.JWT_SECRET,
+            { expiresIn: '1h' }
         )
 
         const { password: userPassword, ...userInfo } = user._doc;
@@ -61,7 +62,7 @@ export const googleLogin = async (req, res, next) => {
         const user = await User.findOne({ email });
         if(user){
             const token = jwt.sign(
-                { userId: user._id },
+                { userId: user._id, isAdmin: user.isAdmin, },
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             )
@@ -83,7 +84,7 @@ export const googleLogin = async (req, res, next) => {
             });
             await newUser.save();
             const token = jwt.sign(
-                { userId: newUser._id },
+                { userId: newUser._id, isAdmin: newUser.isAdmin, },
                 process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             )

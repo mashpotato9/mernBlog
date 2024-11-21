@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'https://www.eastendprep.org/wp-content/uploads/2016/06/noavatar-300x300.jpg',
     },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    }
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
