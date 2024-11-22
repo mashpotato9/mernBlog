@@ -7,10 +7,11 @@ import { app } from '../firebase';
 import { updateStart, updateSuccess, updateFailure, deleteStart, deleteSuccess, deleteFailure, logoutSuccess } from '../redux/user/userSlice.js';
 import { useDispatch } from 'react-redux';
 import apiRequest from '../../lib/apiRequest.js';
+import { Link } from 'react-router-dom';
 
 
 export default function DashProfile() {
-    const { currUser, error } = useSelector(state => state.user);
+    const { currUser, error, loading } = useSelector(state => state.user);
     const [imgFile, setImgFile] = useState(null);
     const [imgURL, setImgURL] = useState(null);
     const [progress, setProgress] = useState(false);
@@ -130,7 +131,16 @@ export default function DashProfile() {
             <TextInput type='text' id='username' placeholder='username' defaultValue={currUser.username} onChange={handleChange} />
             <TextInput type='email' id='email' placeholder='email' defaultValue={currUser.email} onChange={handleChange} />
             <TextInput type='password' id='password' placeholder='password' onChange={handleChange} />
-            <Button type='submit' className='w-60 self-center' gradientDuoTone='tealToLime' outline>Update</Button>
+            <Button type='submit' className='w-full' gradientDuoTone='tealToLime' disabled={loading || progress} >
+                {loading ? 'Loading...' : 'Update'}
+            </Button>
+            {
+                currUser.isAdmin && (
+                    <Link to='/newPost'>
+                        <Button type='button' className='w-full' gradientDuoTone='greenToBlue' c>Create a post</Button>
+                    </Link>
+                )
+            }
         </form>
         <div className='text-red-500 flex justify-between mt-5'>
             <span className='cursor-pointer' onClick={() => setShowWindow(true)}>Delete Account</span>
