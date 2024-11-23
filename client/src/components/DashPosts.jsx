@@ -1,22 +1,25 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import apiRequest from "../../lib/apiRequest";
-import { Table } from "flowbite-react";
+import { Button, Table } from "flowbite-react";
 import { Link } from "react-router-dom";
 
 
 export default function DashPosts() {
   const { currUser } = useSelector((state) => state.user);
+  const [showMore, setShowMore] = useState(true);
   const [userPosts, setUserPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const res = await apiRequest.get(`/post?userId=${currUser._id}`);
-        console.log(res.data);
         if (res.status === 200) {
-          console.log(res.data.posts);
           setUserPosts(res.data.posts);
+          console.log(res.data.posts.length);
+          if(res.data.posts.length < 6) {
+            setShowMore(false);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -26,6 +29,22 @@ export default function DashPosts() {
       fetchPosts();
     }
   }, [currUser._id]);
+
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length;
+    try{
+      const res = await apiRequest.get(`/post?userId=${currUser._id}&startIndex=${startIndex}`);
+      if (res.status === 200) {
+        setUserPosts((prev) => [...prev, ...res.data.posts]);
+        if(res.data.posts.length < 6) {
+          setShowMore(false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   return (
     <div className="table-auto overflow-x-scroll md: mx-auto p-3 scrollbar 
@@ -70,6 +89,13 @@ export default function DashPosts() {
                 </Table.Body>
             ))}
           </Table>
+          {
+            showMore && (
+              <button onClick={handleShowMore} className="w-full text-teal-500 self-center text-sm py-7">
+                Show More
+              </button>
+            )
+          }
         </>
       ) : (
         <p>You do not have any post yet</p>
