@@ -1,21 +1,43 @@
 import { TextInput, Select, FileInput, Button, Alert } from 'flowbite-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase.js';
 import apiRequest from '../../lib/apiRequest.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
-export default function NewPost() {
+export default function EditPost() {
     const [file, setFile] = useState(null);
     const [imgUploadProgress, setImgUploadProgress] = useState(null);
     const [imgUploadError, setImgUploadError] = useState(null);
     const [form, setForm] = useState({});
     const [uploadError, setUploadError] = useState(null);
+    const { postId } = useParams();
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                // Use postId as a query parameter
+                const res = await apiRequest.get(`/post?postId=${postId}`);
+                if (res.status === 200) {
+                    // Since getPosts returns an array in posts field
+                    setForm(res.data.posts[0]);
+                    setUploadError(null);
+                }
+            } catch (error) {
+                console.error('Error fetching post:', error);
+                setUploadError(error.response?.data?.message || 'Error fetching post');
+            }
+        };
+        
+        if (postId) {
+            fetchPost();
+        }
+    }, [postId]);
 
     const handleUploadImg = async () => {
         try{
@@ -30,10 +52,6 @@ export default function NewPost() {
             const uploadTask = uploadBytesResumable(storageRef, file);
             uploadTask.on(
                 'state_changed', 
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    setImgUploadProgress(progress.toFixed(0));
-                }, 
                 (error) => {
                     setImgUploadError(error.message);
                     setImgUploadProgress(null);
@@ -55,14 +73,16 @@ export default function NewPost() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try{
-            const res = await apiRequest.post('/post', form);
-            if(res.status !== 201){
+            const res = await apiRequest.put(`/post/${form._id}`, form);
+            if(res.status !== 200){
                 setUploadError(res.data.message);
                 return;
+            } else {
+                console.log('Post updated:', res.data);
+                setUploadError(null);
+                navigate(`/post/${res.data.slug}`);
             }
-            navigate(`/post/${res.data.slug}`);
         } catch (error) {
-            console.log(error);
             setUploadError(error.message);
         }
 
@@ -70,15 +90,15 @@ export default function NewPost() {
 
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-        <h1 className="text-center text-3xl my-7 font-semibold">New Post</h1>
+        <h1 className="text-center text-3xl my-7 font-semibold">Edit Post</h1>
         <form className="flex flex-col space-y-5" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-4 sm:flex-row justify-between">
                 <TextInput type='text' placeholder='Title' required id='title' className='flex-1' onChange={
                     (e) => setForm({...form, title: e.target.value})
-                } />
+                } value={form.title} />
                 <Select onChange={
                     (e) => setForm({...form, category: e.target.value})
-                }>
+                } value={form.category}>
                     <option value='uncategorize'>Select a category</option>
                     <option value='javascript'> JavaScript </option>
                     <option value='typescript'> TypeScript </option>
@@ -98,10 +118,10 @@ export default function NewPost() {
                 className='w-full h-72 object-cover'
                 />
             )}
-            <ReactQuill theme='snow' placeholder='Write Something' className='h-72 mb-12' onChange={
+            <ReactQuill value={form.content} theme='snow' placeholder='Write Something' className='h-72 mb-12' onChange={
                 (value) => setForm({...form, content: value})
             } />
-            <Button type='submit' gradientDuoTone='tealToLime'>Publish</Button>
+            <Button type='submit' gradientDuoTone='tealToLime'>Update</Button>
             {uploadError && <Alert type='error'>{uploadError}</Alert>}
         </form>
         

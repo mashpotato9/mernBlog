@@ -85,3 +85,29 @@ export const deletePost = async (req, res, next) => {
         next(error);
     }
 }
+
+export const updatePost = async (req, res, next) => {
+    try {
+        const post = await Post.findById(req.params.postId);
+        if (!post) {
+            return next({ statusCode: 404, message: 'Post not found' });
+        }
+
+        if (!req.user.isAdmin && post.userId.toString() !== req.user.userId) {
+            return next({ statusCode: 403, message: 'You are not authorized to update this post' });
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(req.params.postId,
+            { $set: {
+                title: req.body.title,
+                content: req.body.content,
+                category: req.body.category,
+                image: req.body.image,
+            }}, { new: true })
+        
+        res.status(200).json(updatedPost);
+
+    } catch (error) {
+        next(error);
+    }
+}
