@@ -67,3 +67,21 @@ export const getPosts = async (req, res, next) => {
         next(error);
     }
 }
+
+export const deletePost = async (req, res, next) => {
+    try {
+        const post = await Post.findById(req.params.postId);
+        if (!post) {
+            return next({ statusCode: 404, message: 'Post not found' });
+        }
+
+        if (!req.user.isAdmin && post.userId.toString() !== req.user.userId) {
+            return next({ statusCode: 403, message: 'You are not authorized to delete this post' });
+        }
+
+        await Post.findByIdAndDelete(req.params.postId);
+        res.status(200).json({ message: 'Post deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+}
