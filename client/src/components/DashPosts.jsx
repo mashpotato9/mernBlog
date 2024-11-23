@@ -38,6 +38,7 @@ export default function DashPosts() {
       const res = await apiRequest.get(`/post?userId=${currUser._id}&startIndex=${startIndex}`);
       if (res.status === 200) {
         setUserPosts((prev) => [...prev, ...res.data.posts]);
+        console.log(res.data.posts.length);
         if(res.data.posts.length < 6) {
           setShowMore(false);
         }

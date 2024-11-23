@@ -2,8 +2,43 @@ import bcrypt from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import User from '../models/user.model.js';
 
-export const test = (req, res) => {
-    res.json({ message: 'Hello World' });
+
+export const getUsers = async (req, res, next) => {
+    if(!req.user.isAdmin) {
+        return next(errorHandler(403, 'You are not authorized to view users'));
+    }
+
+    try {
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 9;
+        const sortBy = req.query.order === 'asc' ? 1 : -1;
+
+        const users = await User.find()
+            .sort({ createdAt: sortBy })
+            .skip(startIndex)
+            .limit(limit);
+        
+        const userNoPassword = users.map(user => {
+            const { password, ...info } = user._doc;
+            return info;
+        })
+
+        const totalUsers =  await User.countDocuments();
+
+        const now = new Date();
+        const lastMonth  = new Date(
+            now.getFullYear(),
+            now.getMonth() - 1,
+            now.getDate()
+        )
+
+        const newUsers = await User.countDocuments({ createdAt: { $gte: lastMonth } });
+
+        res.status(200).json({ userNoPassword, totalUsers, newUsers });
+
+    } catch (error) {
+        next(error);
+    }
 }
 
 export const updateUser = async (req, res, next) => {
