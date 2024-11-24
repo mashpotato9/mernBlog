@@ -11,6 +11,7 @@ import PrivateRoute from './components/PrivateRoute.jsx'
 import AdminRoute from './components/AdminRoute.jsx'
 import NewPost from './pages/newPost.jsx'
 import EditPost from './pages/EditPost.jsx'
+import SinglePage from './pages/SinglePage.jsx'
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
           <Route path='/editpost/:postId' element={<EditPost />} />
         </Route>
         <Route path="/projects" element={<Projects />} />
+        <Route path="/post/:postSlug" element={<SinglePage />} />
 
       </Routes>
       <Footer />
