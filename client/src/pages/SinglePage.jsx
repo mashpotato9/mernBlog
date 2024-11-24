@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import apiRequest from "../../lib/apiRequest"
 import { Button, Spinner } from "flowbite-react";
-import CallToAction from "../components/CallToAction";
+import CallToAction from "../components/CallToAction.jsx";
+import Comment from "../components/Comment.jsx";
 
 export default function SinglePage() {
     const { postSlug } = useParams();
@@ -58,6 +59,7 @@ export default function SinglePage() {
         <div className="max-w-4xl mx-auto w-full">
             <CallToAction />
         </div>
+        <Comment postId={post._id} />
     </main>
   )
 }
