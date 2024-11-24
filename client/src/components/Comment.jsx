@@ -1,13 +1,18 @@
 import { Alert, Button, Textarea } from 'flowbite-react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import apiRequest from '../../lib/apiRequest.js'
+import SingleComment from './SingleComment.jsx';
 
-export default function Comment({postId}) {
+
+export default function Comment({ postId }) {
     const {currUser} = useSelector(state => state.user);
     const [comment, setComment] = useState('');
     const [commentError, setCommentError] = useState('');
+    const [commentsToDisplay, setCommentsToDisplay] = useState([]);
+
+    console.log(commentsToDisplay);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,13 +26,27 @@ export default function Comment({postId}) {
             if(res.status === 200){
                 setComment('');
                 setCommentError('');
+                setCommentsToDisplay([res.data, ...commentsToDisplay]);
             }
         }
         catch(err){
             setCommentError(err.response.data.message);
         }
-        
     }
+
+    useEffect(() => {
+        const getComments = async () => {
+            try{
+                const res = await apiRequest.get(`/comment/${postId}`);
+                if(res.status === 200){
+                    setCommentsToDisplay(res.data);
+                }
+            } catch(err){
+                console.log(err);
+            }
+        }
+        getComments();
+    }, [postId])
 
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
@@ -59,7 +78,25 @@ export default function Comment({postId}) {
                 )}
                 
             </form>
-            
+        )}
+        {commentsToDisplay.length === 0 ? (
+            <p className='text-gray-500 text-sm mt-5'>No Comments Yet</p>
+        ) : (
+            <>
+            <div className='text-sm my-5 flex items-center gap-1'>
+                <p>Comments</p>
+                <div className='border border-gray-400 py-1 px-2 rounded-sm'>
+                    <p>{commentsToDisplay.length}</p>
+                </div>
+            </div>
+            {commentsToDisplay.map(comment => (
+                <SingleComment 
+                key={comment._id}
+                comment={comment}
+                />
+            ))}
+
+            </>
         )}
     </div>
   )
