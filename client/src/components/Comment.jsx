@@ -1,6 +1,6 @@
 import { Alert, Button, Textarea } from 'flowbite-react';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import apiRequest from '../../lib/apiRequest.js'
 import SingleComment from './SingleComment.jsx';
@@ -11,8 +11,7 @@ export default function Comment({ postId }) {
     const [comment, setComment] = useState('');
     const [commentError, setCommentError] = useState('');
     const [commentsToDisplay, setCommentsToDisplay] = useState([]);
-
-    console.log(commentsToDisplay);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,6 +22,7 @@ export default function Comment({ postId }) {
                 postId,
                 userId: currUser._id
             })
+
             if(res.status === 200){
                 setComment('');
                 setCommentError('');
@@ -47,6 +47,28 @@ export default function Comment({ postId }) {
         }
         getComments();
     }, [postId])
+
+    const handleLike = async (commentId) => {
+        try{
+            if(!currUser) {
+                navigate('/login');
+                return;
+            }
+            const res = await apiRequest.put(`/comment/likeComment/${commentId}`);
+
+            if(res.status === 200){
+                setCommentsToDisplay(commentsToDisplay.map(comment =>
+                    comment._id === commentId ?{
+                        ...comment,
+                        likes: res.data.likes,
+                        numberOfLikes: res.data.likes.length
+                    } : comment
+                ));
+            }
+        } catch(err){
+            console.log(err);
+        }
+    }
 
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
@@ -93,6 +115,7 @@ export default function Comment({ postId }) {
                 <SingleComment 
                 key={comment._id}
                 comment={comment}
+                onLike={handleLike}
                 />
             ))}
 
