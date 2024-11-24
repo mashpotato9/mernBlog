@@ -48,7 +48,15 @@ export default function DashUsers() {
   }
 
   const handleDeleteUser = async () => {
-    
+    try{
+        const res = await apiRequest.delete(`/user/${userIdToDelete}`);
+        if (res.status === 200) {
+            setUsers(prev => prev.filter(user => user._id !== userIdToDelete));
+            setShowWindow(false);
+        }
+    } catch (error) {
+        console.log(error);
+    }
   }
 
   return (
@@ -67,7 +75,7 @@ export default function DashUsers() {
                 <Table.HeadCell>Delete</Table.HeadCell>
             </Table.Head>
             {users.map((user) => (
-                <Table.Body key={user._id} divide-y>
+                <Table.Body key={user._id} divide-y='true'>
                     <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
                         <Table.Cell>{new Date(user.createdAt).toLocaleDateString()}</Table.Cell>
                         <Table.Cell>

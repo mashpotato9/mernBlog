@@ -85,7 +85,7 @@ export default function DashProfile() {
         }
         try {
             dispatch(updateStart());
-            const res = await apiRequest.put(`user/update/${currUser._id}`, formData);
+            const res = await apiRequest.put(`user/${currUser._id}`, formData);
             dispatch(updateSuccess(res.data));
             setUpdateUserSuccess('User updated successfully');
         } catch (error) {
@@ -98,7 +98,7 @@ export default function DashProfile() {
         setShowWindow(false);
         try {
             dispatch(deleteStart());
-            const res = await apiRequest.delete(`user/delete/${currUser._id}`);
+            const res = await apiRequest.delete(`user/${currUser._id}`);
             dispatch(deleteSuccess(res.data.message));
         } catch (error) {
             dispatch(deleteFailure(error.response?.data?.message));
