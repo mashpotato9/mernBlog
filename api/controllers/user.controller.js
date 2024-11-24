@@ -10,7 +10,7 @@ export const getUsers = async (req, res, next) => {
 
     try {
         const startIndex = parseInt(req.query.startIndex) || 0;
-        const limit = parseInt(req.query.limit) || 9;
+        const limit = parseInt(req.query.limit) || 6;
         const sortBy = req.query.order === 'asc' ? 1 : -1;
 
         const users = await User.find()
@@ -34,7 +34,7 @@ export const getUsers = async (req, res, next) => {
 
         const newUsers = await User.countDocuments({ createdAt: { $gte: lastMonth } });
 
-        res.status(200).json({ userNoPassword, totalUsers, newUsers });
+        res.status(200).json({ users: userNoPassword, totalUsers, newUsers });
 
     } catch (error) {
         next(error);
