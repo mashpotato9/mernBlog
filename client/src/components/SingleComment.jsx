@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { Textarea } from 'flowbite-react';
 import { Button } from 'flowbite-react';
 
-export default function SingleComment({comment, onLike, onEdit}) {
+export default function SingleComment({comment, onLike, onEdit, onDelete}) {
     const {currUser} = useSelector(state => state.user);
     const [commentUser, setCommentUser] = useState({});
     const [isEditing, setIsEditing] = useState(false);
@@ -85,10 +85,16 @@ export default function SingleComment({comment, onLike, onEdit}) {
                         </button>
                         <p className='text-gray-400'>{comment.numberOfLikes > 0 && comment.numberOfLikes + " " + (comment.numberOfLikes ===1 ? 'like' : 'likes')}</p>
                         {currUser && (currUser._id === comment.userId || currUser.isAdmin) && (
-                            <button type='button' className='text-gray-400 hover:text-red-400'
+                            <>
+                            <button type='button' className='text-gray-400 hover:text-blue-400'
                             onClick={handleEdit}>
                                 Edit
                             </button>
+                            <button type='button' className='text-gray-400 hover:text-red-400'
+                            onClick={() => onDelete(comment._id)}>
+                                Delete
+                            </button>
+                            </>
                         )}
                     </div>
                 </>

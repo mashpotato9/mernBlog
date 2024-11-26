@@ -170,7 +170,7 @@ export default function DashProfile() {
                 </div>
                 <div className='flex justify-center gap-20'>
                     <Button color='failure' onClick={handleDeleteUser}>Yes, I'm sure</Button>
-                    <Button color='' onClick={() => setShowWindow(false)}>Cancel</Button>
+                    <Button color='gray' onClick={() => setShowWindow(false)}>Cancel</Button>
                 </div>
             </Modal.Body>
         </Modal>
