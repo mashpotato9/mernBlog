@@ -88,7 +88,6 @@ export default function Comment({ postId }) {
                 navigate('/login');
                 return;
             }
-            console.log(commentToDelete)
             const res = await apiRequest.delete(`/comment/${commentToDelete}`);
             if(res.status === 200){
                 setCommentsToDisplay(commentsToDisplay.filter(comment => comment._id !== commentToDelete));
