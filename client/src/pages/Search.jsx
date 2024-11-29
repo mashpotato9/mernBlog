@@ -31,11 +31,7 @@ export default function Search() {
 
     const fetchPosts = async () => {
         setLoading(true);
-        const queryParams = new URLSearchParams(location.search);
-        if (!queryParams.has('order')) {
-            queryParams.set('order', 'desc');
-        }
-        const query = queryParams.toString();
+        const query = searchParams.toString();
         
         try {
             const res = await apiRequest.get(`post?${query}`);
