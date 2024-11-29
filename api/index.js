@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-    ? 'https://your-render-app.onrender.com'
+    ? 'https://mernblog-5731.onrender.com'
     : 'http://localhost:5173',
     credentials: true
 }));
