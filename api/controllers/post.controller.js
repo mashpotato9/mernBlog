@@ -68,6 +68,8 @@ export const getPosts = async (req, res, next) => {
     }
 }
 
+
+
 export const deletePost = async (req, res, next) => {
     try {
         const post = await Post.findById(req.params.postId);

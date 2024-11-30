@@ -36,7 +36,11 @@ app.use('/api/comment', commentRoutes);
 
 app.use(express.static(path.join(__dirname, '../client/dist')));
 app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
     res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+  } else {
+    res.status(404).json({ message: 'API route not found' });
+  }
 });
 
 app.use((err, req, res, next) => {

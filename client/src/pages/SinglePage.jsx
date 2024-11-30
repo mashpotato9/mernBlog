@@ -7,17 +7,19 @@ import Comment from "../components/Comment.jsx";
 import PostCard from "../components/PostCard.jsx";
 
 export default function SinglePage() {
-    const { postSlug } = useParams();
+    const { slug } = useParams();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [post, setPost] = useState(null);
     const [recentPosts, setRecentPosts] = useState([]);
 
+    console.log(slug);
+
     useEffect(() => {
         const fetchPost = async () => {
             try{
                 setLoading(true);
-                const res = await apiRequest.get(`/post?postSlug=${postSlug}`)
+                const res = await apiRequest.get(`/post?slug=${slug}`)
                 if(res.status === 200) {
                     setPost(res.data.posts[0]);
                     setLoading(false);
@@ -33,7 +35,7 @@ export default function SinglePage() {
             }
         }
         fetchPost()
-    }, [postSlug]);
+    }, [slug]);
 
     useEffect(() => {
         try {
