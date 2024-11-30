@@ -17,8 +17,9 @@ export default function CallToAction() {
 
         </div>
         <div className="ml-10 flex-1">
-            <img src="https://firebasestorage.googleapis.com/v0/b/mernblog-611d4.firebasestorage.app/o/image.png?alt=media&token=1c3b8718-6187-4443-af39-868f9a8ce65b" alt="" 
+            <img src="https://firebasestorage.googleapis.com/v0/b/mernblog-611d4.firebasestorage.app/o/image.png?alt=media&token=5be7196a-94aa-4a25-b74d-8745e446f0f5" alt="" 
             className="mt-5 sm:mt-0" />
+            
         </div>
     </div>
   )
